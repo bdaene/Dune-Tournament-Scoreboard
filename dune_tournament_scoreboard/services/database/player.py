@@ -1,5 +1,4 @@
 import sqlite3
-from typing import Iterable
 
 from dune_tournament_scoreboard.assets import Player
 from dune_tournament_scoreboard.assets.player import PlayerId
@@ -7,8 +6,8 @@ from dune_tournament_scoreboard.assets.player import PlayerId
 
 def create_table(cursor: sqlite3.Cursor):
     cursor.execute("""CREATE TABLE player(
-        id TEXT NOT NULL UNIQUE, 
-        name TEXT NOT NULL, 
+        id TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL,
         surname TEXT NOT NULL,
         PRIMARY KEY (id),
         UNIQUE (name, surname)

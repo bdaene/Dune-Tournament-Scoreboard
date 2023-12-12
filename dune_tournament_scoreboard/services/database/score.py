@@ -28,7 +28,7 @@ def save_all(cursor: sqlite3.Cursor, scores: list[dict[PlayerId: Score]]):
 
 def save(cursor: sqlite3.Cursor, round: int, player_id: PlayerId, score: Score):
     cursor.execute(
-        """REPLACE INTO score (round, player_id, tournament_points, victory_points, spice, solaris, water, 
+        """REPLACE INTO score (round, player_id, tournament_points, victory_points, spice, solaris, water,
         troops_in_garrison) VALUES (?,?,?,?,?,?,?,?)""",
         (round, player_id, score.tournament_points, score.victory_points, score.spice, score.solaris,
          score.water, score.troops_in_garrison)
@@ -36,7 +36,7 @@ def save(cursor: sqlite3.Cursor, round: int, player_id: PlayerId, score: Score):
 
 
 def load_all(cursor: sqlite3.Cursor) -> list[dict[PlayerId: Score]]:
-    scores = cursor.execute("""SELECT round, player_id, tournament_points, victory_points, spice, solaris, water, 
+    scores = cursor.execute("""SELECT round, player_id, tournament_points, victory_points, spice, solaris, water,
         troops_in_garrison FROM score""").fetchall()
     nb_rounds = max(round for round, *_ in scores) + 1
     rounds = [{} for _ in range(nb_rounds)]
