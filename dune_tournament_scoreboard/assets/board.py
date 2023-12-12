@@ -1,13 +1,13 @@
 from dataclasses import dataclass
 
-from dune_tournament_scoreboard.assets.player import Player
+from dune_tournament_scoreboard.assets.player import Player, PlayerId
 from dune_tournament_scoreboard.assets.score import Score
 
 
 @dataclass
 class Board:
-    players: dict[str, Player]
-    rounds: list[dict[str, Score]]
+    players: dict[PlayerId, Player]
+    rounds: list[dict[PlayerId, Score]]
 
     def get_total_score(self, player: Player) -> Score:
         score = Score()

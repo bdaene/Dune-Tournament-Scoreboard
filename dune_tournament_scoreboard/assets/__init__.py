@@ -1,0 +1,4 @@
+from dune_tournament_scoreboard.assets.player import Player
+from dune_tournament_scoreboard.assets.score import Score
+from dune_tournament_scoreboard.assets.board import Board
+from dune_tournament_scoreboard.assets.tournament import Tournament

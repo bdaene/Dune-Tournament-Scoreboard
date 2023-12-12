@@ -1,0 +1,1 @@
+from dune_tournament_scoreboard.services import database
