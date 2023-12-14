@@ -1,8 +1,9 @@
 from __future__ import annotations
-from dataclasses import dataclass
+
+from attr import define
 
 
-@dataclass(order=True)
+@define(order=True)
 class Score:
     tournament_points: int = 0
     victory_points: int = 0

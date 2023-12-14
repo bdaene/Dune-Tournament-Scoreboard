@@ -1,7 +1,7 @@
 import random
 
 from dune_tournament_scoreboard import controllers
-from tests.assets.test_board import _get_test_board
+from tests.assets._test_board import _get_test_board
 
 
 def main():
