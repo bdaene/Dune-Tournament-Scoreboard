@@ -1,1 +1,3 @@
-from dune_tournament_scoreboard.services.database import tournament, player, score
+import dune_tournament_scoreboard.services.database.tournament
+import dune_tournament_scoreboard.services.database.player
+import dune_tournament_scoreboard.services.database.score

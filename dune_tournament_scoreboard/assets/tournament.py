@@ -27,10 +27,13 @@ class Tournament:
 
     def create_new_round(self):
         players = [player_id for player_id, player in self.players.items() if player.is_active]
-        players.sort(key=self.get_total_score, reverse=True)
+        players.sort(key=lambda player_id: (self.get_total_score(player_id), random.random()), reverse=True)
         seats = _get_seats(self.rounds)
         tables = [_order_table(table, seats) for table in _create_tables(players)]
         self.rounds.append(Round(tables))
+
+    def get_round(self, round_: int = -1):
+        return self.rounds[round_]
 
     def get_total_score(self, player: PlayerId) -> Score:
         return sum((round_.scores.get(player, Score()) for round_ in self.rounds), start=Score())

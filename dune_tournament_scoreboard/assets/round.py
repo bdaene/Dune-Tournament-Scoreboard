@@ -16,12 +16,10 @@ class Round:
     def update_score(self, player: PlayerId, score: Score):
         self.scores[player] = score
 
-    def compute_tournament_points(self, table: Optional[Table] = None):
-        if table is None:
-            for table in self.tables:
-                self.compute_tournament_points(table)
-            return
+    def get_score(self, player: PlayerId) -> Score:
+        return self.scores.get(player, Score())
 
+    def compute_tournament_points(self, table: Table):
         player_order = sorted(table, key=lambda player_id_: self.scores.get(player_id_, Score()), reverse=True)
 
         for player_id, tournament_points in zip(player_order, [5, 3, 1]):

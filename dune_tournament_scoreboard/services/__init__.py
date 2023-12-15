@@ -1,1 +1,1 @@
-from dune_tournament_scoreboard.services import database
+import dune_tournament_scoreboard.services.database
