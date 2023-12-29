@@ -11,7 +11,7 @@ class Player:
     name: str
     surname: str
     id: PlayerId = field(factory=lambda: uuid4().hex)
-    is_active: bool = field(default=True)
+    is_active: bool = field(default=True, converter=bool)
 
     @property
     def full_name(self):

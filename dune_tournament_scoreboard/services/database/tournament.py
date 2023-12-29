@@ -4,7 +4,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from dune_tournament_scoreboard.assets import Board
 from dune_tournament_scoreboard.assets.tournament import Tournament, TournamentId
 from dune_tournament_scoreboard.services import database
 
@@ -36,8 +35,14 @@ def _connect(tournament_id: str):
 
 @atexit.register
 def _disconnect():
+    global _connection
     if _connection is not None:
         _connection.close()
+    _connection = None
+
+
+def list_all() -> list[TournamentId]:
+    return sorted(path.stem for path in DATA_ROOT.glob('*.db'))
 
 
 def select(tournament_id) -> Tournament:
@@ -68,39 +73,40 @@ def create(tournament: Tournament):
     _connect(tournament.id)
     cursor = get_cursor()
 
-    _create_table(cursor)
-    database.score.create_table(cursor)
-    database.player.create_table(cursor)
-
-    cursor.execute("INSERT INTO tournament(id, creation) VALUES (?,?)",
-                   (tournament.id, tournament.creation))
+    create_table(cursor)
     save(cursor, tournament)
     commit()
 
 
-def _create_table(cursor: sqlite3.Cursor):
+def create_table(cursor: sqlite3.Cursor):
     cursor.execute("""CREATE TABLE tournament(
         id TEXT NOT NULL,
         creation DATETIME NOT NULL,
+
+        UNIQUE (id)
+
         PRIMARY KEY (id)
     )""")
 
+    database.player.create_table(cursor)
+    database.round.create_table(cursor)
+
 
 def save(cursor: sqlite3.Cursor, tournament: Tournament):
-    database.player.save_all(cursor, tournament.board.players)
-    database.score.save_all(cursor, tournament.board.rounds)
+    cursor.execute("""REPLACE INTO tournament (id, creation) VALUES (:id, :creation)""",
+                   dict(id=tournament.id, creation=tournament.creation.isoformat()))
+    database.player.save_all(cursor, players=tournament.players.values())
+    database.round.save_all(cursor, rounds=tournament.rounds)
 
 
 def load(cursor: sqlite3.Cursor) -> Tournament:
     tournament_id, creation = cursor.execute("""SELECT id, creation FROM tournament""").fetchone()
-    players = database.player.load_all(cursor)
-    rounds = database.score.load_all(cursor)
+    players = {player.id: player for player in database.player.load_all(cursor)}
+    rounds = database.round.load_all(cursor)
 
     return Tournament(
         id=tournament_id,
         creation=datetime.fromisoformat(creation),
-        board=Board(
-            players=players,
-            rounds=rounds
-        )
+        players=players,
+        rounds=rounds,
     )

@@ -1,3 +1,5 @@
-import dune_tournament_scoreboard.services.database.tournament
 import dune_tournament_scoreboard.services.database.player
+import dune_tournament_scoreboard.services.database.round
 import dune_tournament_scoreboard.services.database.score
+import dune_tournament_scoreboard.services.database.table
+import dune_tournament_scoreboard.services.database.tournament

@@ -1,4 +1,4 @@
-from typing import TypeAlias, Optional
+from typing import TypeAlias
 
 from attr import define, field
 
@@ -18,12 +18,3 @@ class Round:
 
     def get_score(self, player: PlayerId) -> Score:
         return self.scores.get(player, Score())
-
-    def compute_tournament_points(self, table: Table):
-        player_order = sorted(table, key=lambda player_id_: self.scores.get(player_id_, Score()), reverse=True)
-
-        for player_id, tournament_points in zip(player_order, [5, 3, 1]):
-            self.scores[player_id].tournament_points = tournament_points
-
-        for player_id in player_order[3:]:
-            self.scores[player_id].tournament_points = 0

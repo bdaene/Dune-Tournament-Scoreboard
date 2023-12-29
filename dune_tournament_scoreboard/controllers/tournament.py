@@ -5,6 +5,7 @@ from dune_tournament_scoreboard.assets.player import Player, PlayerId
 from dune_tournament_scoreboard.assets.round import Table
 from dune_tournament_scoreboard.assets.score import Score
 from dune_tournament_scoreboard.assets.tournament import Tournament, TournamentId
+from dune_tournament_scoreboard.services import database
 
 _current_tournament: Optional[Tournament] = None
 
@@ -21,14 +22,15 @@ def check_current_tournament(func):
 
 def create(id_: TournamentId):
     tournament = Tournament(id=id_)
-    # TODO save new tournament in DB
+
+    database.tournament.create(tournament=tournament)
 
     global _current_tournament
     _current_tournament = tournament
 
 
 def select(id_: TournamentId):
-    tournament = Tournament(id=id_)  # TODO load tournament from DB
+    tournament = database.tournament.select(tournament_id=id_)
 
     global _current_tournament
     _current_tournament = tournament
@@ -41,14 +43,15 @@ def get_current() -> Optional[TournamentId]:
 
 
 def list_tournaments() -> list[TournamentId]:
-    return []  # TODO fetch tournaments from DB
+    return database.tournament.list_all()
 
 
 @check_current_tournament
 def create_player(name: str, surname: str):
     player = Player(name=name, surname=surname)
     _current_tournament.update_player(player)
-    # TODO: save player
+
+    database.player.save(database.tournament.get_cursor(), player=player)
 
 
 @check_current_tournament
@@ -59,19 +62,24 @@ def list_players() -> list[Player]:
 @check_current_tournament
 def update_player(player: Player):
     _current_tournament.update_player(player)
-    # TODO: save player
+
+    database.player.save(database.tournament.get_cursor(), player=player)
 
 
 @check_current_tournament
 def deactivate_player(player: PlayerId):
     _current_tournament.deactivate_player(player)
-    # TODO: save player
+
+    database.player.save(database.tournament.get_cursor(), player=_current_tournament.players[player])
 
 
 @check_current_tournament
 def create_round():
+    round_id = len(_current_tournament.rounds)
     _current_tournament.create_new_round()
-    # TODO: save new round tables
+
+    database.table.save_all(database.tournament.get_cursor(), round_=round_id,
+                            tables=_current_tournament.get_round().tables)
 
 
 @check_current_tournament
@@ -82,7 +90,11 @@ def list_tables(round_: int = -1) -> list[Table]:
 @check_current_tournament
 def update_score(player: PlayerId, score: Score, round_: int = -1):
     _current_tournament.get_round(round_).update_score(player, score)
-    # TODO: save updated score
+
+    if round_ < 0:
+        round_ = len(_current_tournament.rounds) + round_
+
+    database.score.save(database.tournament.get_cursor(), round_=round_, player_id=player, score=score)
 
 
 @check_current_tournament
@@ -99,19 +111,6 @@ def get_scores(round_: int = -1, table: int = None) -> list[list[tuple[PlayerId,
         tables = [round_.tables[table]]
 
     return [[(player, round_.get_score(player)) for player in table] for table in tables]
-
-
-@check_current_tournament
-def compute_tournament_points(round_: int = -1, table: int = None):
-    round_ = _current_tournament.get_round(round_)
-    if table is None:
-        tables = round_.tables
-    else:
-        tables = [round_.tables[table]]
-
-    for table in tables:
-        round_.compute_tournament_points(table)
-    # TODO save updated scores
 
 
 @check_current_tournament
