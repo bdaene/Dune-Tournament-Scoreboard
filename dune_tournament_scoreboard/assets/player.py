@@ -15,4 +15,4 @@ class Player:
 
     @property
     def full_name(self):
-        return f"{self.name.capitalize()} {self.surname.title()}"
+        return f"{self.name.upper()} {self.surname.title()}"

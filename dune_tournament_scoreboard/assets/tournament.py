@@ -80,7 +80,7 @@ def _get_seats(rounds: list[Round]) -> dict[PlayerId, list[int]]:
 
 def _order_table(table: Table, previous_seats: dict[PlayerId, list[int]]) -> Table:
     possible_tables = [table_ for table_ in permutations(table)
-                       if all(seat not in previous_seats[player] for seat, player in enumerate(table_))]
+                       if all(seat not in previous_seats.get(player, []) for seat, player in enumerate(table_))]
 
     if possible_tables:
         return list(random.choice(possible_tables))
