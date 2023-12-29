@@ -26,7 +26,7 @@ def _check_exists(tournament_id) -> bool:
     return False
 
 
-def _connect(tournament_id: str):
+def _connect(tournament_id: TournamentId):
     _disconnect()
 
     global _connection

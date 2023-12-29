@@ -36,7 +36,7 @@ def test_save_and_reload():
     assert loaded_tournament == tournament
 
 
-def test_create_list_and_select(clean_data):
+def test_create_list_and_select(temporary_data_root):
     assert list_all() == []
 
     tournament_a = Tournament(id="a")

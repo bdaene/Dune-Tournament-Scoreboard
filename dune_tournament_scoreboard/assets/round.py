@@ -12,9 +12,3 @@ Table: TypeAlias = list[PlayerId]
 class Round:
     tables: list[Table]
     scores: dict[PlayerId: Score] = field(factory=dict)
-
-    def update_score(self, player: PlayerId, score: Score):
-        self.scores[player] = score
-
-    def get_score(self, player: PlayerId) -> Score:
-        return self.scores.get(player, Score())
