@@ -22,8 +22,8 @@ def _check_current_tournament(func):
     return wrapper
 
 
-def create(id_: TournamentId):
-    tournament = Tournament(id=id_)
+def create(tournament_id: TournamentId):
+    tournament = Tournament(id=tournament_id)
 
     database.tournament.create(tournament=tournament)
 
@@ -31,8 +31,8 @@ def create(id_: TournamentId):
     _current_tournament = tournament
 
 
-def select(id_: TournamentId):
-    tournament = database.tournament.select(tournament_id=id_)
+def select(tournament_id: TournamentId):
+    tournament = database.tournament.select(tournament_id=tournament_id)
 
     global _current_tournament
     _current_tournament = tournament
@@ -61,7 +61,8 @@ def get_player(player_id: PlayerId) -> Optional[Player]:
 
 @_check_current_tournament
 def list_players() -> list[Player]:
-    return list(_current_tournament.players.values())
+    return sorted(_current_tournament.players.values(),
+                  key=lambda player: (player.name.upper(), player.surname.title()))
 
 
 @_check_current_tournament
@@ -69,6 +70,7 @@ def update_player(player: Player):
     _current_tournament.players[player.id] = player
 
     database.player.save(database.tournament.get_cursor(), player=player)
+    database.tournament.commit()
 
 
 @_check_current_tournament
@@ -76,6 +78,7 @@ def deactivate_player(player: PlayerId):
     _current_tournament.players[player].is_active = False
 
     database.player.save(database.tournament.get_cursor(), player=_current_tournament.players[player])
+    database.tournament.commit()
 
 
 @_check_current_tournament
@@ -91,11 +94,15 @@ def create_new_round():
 
     database.table.save_all(database.tournament.get_cursor(), round_=round_id,
                             tables=_current_tournament.rounds[round_id].tables)
+    database.tournament.commit()
 
 
 @_check_current_tournament
 def list_tables(round_: int = -1) -> list[Table]:
-    return _current_tournament.rounds[round_].tables
+    try:
+        return _current_tournament.rounds[round_].tables
+    except IndexError:
+        return []
 
 
 @_check_current_tournament
@@ -106,6 +113,7 @@ def update_score(player: PlayerId, score: Score, round_: int = -1):
         round_ = len(_current_tournament.rounds) + round_
 
     database.score.save(database.tournament.get_cursor(), round_=round_, player_id=player, score=score)
+    database.tournament.commit()
 
 
 @_check_current_tournament

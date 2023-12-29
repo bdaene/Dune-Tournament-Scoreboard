@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import TypeAlias
 
-from attr import define, field
+from attrs import define, field
 
 from dune_tournament_scoreboard.assets.player import PlayerId, Player
 from dune_tournament_scoreboard.assets.round import Round

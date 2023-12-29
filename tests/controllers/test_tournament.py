@@ -39,7 +39,7 @@ def test_create_new_round(database_mock, reset_current_tournament):
 
 @mock.patch('dune_tournament_scoreboard.controllers.tournament.database')
 def test_create(database_mock):
-    create(id_="Test tournament")
+    create(tournament_id="Test tournament")
 
     assert get_current() == "Test tournament"
     database_mock.tournament.create.assert_called_with(tournament=Tournament(
@@ -53,8 +53,8 @@ def test_create(database_mock):
 def test_get_current_select_and_list_tournaments(temporary_data_root, unselect_current_tournament):
     assert get_current() is None
 
-    create(id_="a")
-    create(id_="b")
+    create(tournament_id="a")
+    create(tournament_id="b")
 
     assert get_current() == "b"
     select("a")
