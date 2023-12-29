@@ -125,7 +125,7 @@ def get_score(player: PlayerId, round_: int = -1):
 def get_summary() -> list[tuple[Player, list[int], Score]]:
     rounds = _current_tournament.rounds
     summary = [(player, _get_tournament_points(player.id, rounds), _get_total_score(player.id, rounds))
-               for player in _current_tournament.players.values() if player.is_active]
+               for player in _current_tournament.players.values()]
     summary.sort(key=lambda line: line[-1], reverse=True)
     return summary
 
@@ -135,7 +135,7 @@ def _get_total_score(player: PlayerId, rounds: list[Round]) -> Score:
 
 
 def _get_tournament_points(player: PlayerId, rounds: list[Round]) -> list[int]:
-    return [round_.scores.get(player, Score()).tournament_points for round_ in rounds]
+    return [round_.scores[player].tournament_points if player in round_.scores else None for round_ in rounds]
 
 
 def _create_tables(players: list[PlayerId]) -> list[Table]:

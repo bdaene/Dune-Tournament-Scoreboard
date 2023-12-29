@@ -45,12 +45,12 @@ def _format_entry(entry: Optional[tuple[Player, list[int], Score]], rounds: int)
         )
         data |= {f"round_{i}": f"Round {i}" for i in range(rounds)}
         data |= dict(
-            tournament_points='Tournament points',
-            victory_points='Victory points',
+            tournament_points='TP',
+            victory_points='VP',
             spice='Spice',
             solaris='Solaris',
             water='Water',
-            troops_in_garrison='Troops in Garrison'
+            troops_in_garrison='Troops'
         )
     else:
         player, tournament_points, score = entry
@@ -61,10 +61,10 @@ def _format_entry(entry: Optional[tuple[Player, list[int], Score]], rounds: int)
         data |= {f"round_{i}": round_ for i, round_ in enumerate(tournament_points)}
         data |= attrs.asdict(score)
 
-    entry_format = ["{name: <32}", "{surname: <32}"]
-    entry_format += [f"{{round_{i}: <8}}" for i in range(rounds)]
-    entry_format += ["{tournament_points: <18}", "{victory_points: <18}", "{spice: <18}", "{solaris: <18}",
-                     "{water: <18}", "{troops_in_garrison: <18}"]
+    entry_format = ["{name: <20}", "{surname: <20}"]
+    entry_format += [f"{{round_{i}!s: >8}}" for i in range(rounds)]
+    entry_format += ["{tournament_points!s: >8}", "{victory_points!s: >8}", "{spice!s: >8}", "{solaris!s: >8}",
+                     "{water!s: >8}", "{troops_in_garrison!s: >8}"]
     return " ".join(entry_format).format(**data)
 
 

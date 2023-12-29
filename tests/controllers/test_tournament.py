@@ -11,16 +11,17 @@ from dune_tournament_scoreboard.controllers.tournament import (get_summary, crea
 
 def test_get_summary(reset_current_tournament):
     assert get_summary() == [
-        (get_player('f'), [9, 0, 6], Score(15, 3, 5, 12, 12, 2)),
-        (get_player('g'), [7, 0, 6], Score(13, 3, 7, 9, 6, 7)),
-        (get_player('e'), [0, 0, 9], Score(9, 8, 7, 5, 5, 4)),
-        (get_player('c'), [0, 9, 0], Score(9, 7, 1, 8, 1, 8)),
-        (get_player('b'), [9, 0, 0], Score(9, 3, 3, 9, 4, 5)),
+        (get_player('f'), [9, None, 6], Score(15, 3, 5, 12, 12, 2)),
+        (get_player('g'), [7, None, 6], Score(13, 3, 7, 9, 6, 7)),
+        (get_player('e'), [None, None, 9], Score(9, 8, 7, 5, 5, 4)),
+        (get_player('c'), [None, 9, None], Score(9, 7, 1, 8, 1, 8)),
+        (get_player('b'), [9, None, None], Score(9, 3, 3, 9, 4, 5)),
         (get_player('a'), [0, 6, 1], Score(7, 16, 19, 10, 12, 20)),
-        (get_player('h'), [0, 6, 0], Score(6, 8, 8, 4, 8, 5)),
-        (get_player('d'), [0, 4, 0], Score(4, 8, 1, 6, 8, 2)),
-        (get_player('j'), [0, 0, 0], Score(0, 0, 0, 0, 0, 0)),
-        (get_player('k'), [0, 0, 0], Score(0, 0, 0, 0, 0, 0)),
+        (get_player('h'), [None, 6, None], Score(6, 8, 8, 4, 8, 5)),
+        (get_player('d'), [None, 4, None], Score(4, 8, 1, 6, 8, 2)),
+        (get_player('i'), [None, None, None], Score(0, 0, 0, 0, 0, 0)),
+        (get_player('j'), [None, None, None], Score(0, 0, 0, 0, 0, 0)),
+        (get_player('k'), [None, None, None], Score(0, 0, 0, 0, 0, 0)),
     ]
 
 

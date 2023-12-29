@@ -12,7 +12,7 @@ def _format_player(player: Optional[Player]) -> str:
         data = dict(id="ID", name='NAME', surname='Surname', is_active='is active?')
     else:
         data = asdict(player)
-    return "{id: <32} {name: <32} {surname: <32} {is_active!s: <20}".format(**data)
+    return "{id: <32} {name: <20} {surname: <20} {is_active!s: <6}".format(**data)
 
 
 @click.group('player')
