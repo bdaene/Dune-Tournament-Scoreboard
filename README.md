@@ -176,6 +176,13 @@ After all rounds are played and encoded, display for the least time the summary 
 
 I hope you had a fun and entertaining tournament. You can save and share the tournament data. They are found in `data/the_best_tournament_ever.db`
 
+## Excel version
+
+I implemented the same logic in an Excel workbook with macros (VBA).
+It may be simpler to use.
+
+You can find into `excel/tournoi.xlsm` (in French).
+
 ## Contact
 
 You can contact me on my mail: benoitdaene@gmail.com
