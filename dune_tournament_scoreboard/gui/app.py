@@ -22,8 +22,8 @@ class App(ctk.CTk):
         # Configure grid system
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure(2, weight=1)
+        self.grid_columnconfigure(1, weight=2)
+        self.grid_columnconfigure(2, weight=2)
         self.configure(padx=10, pady=10)
 
         # Add Players
