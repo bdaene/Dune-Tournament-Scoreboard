@@ -32,6 +32,7 @@ class App(ctk.CTk):
         self.configure(padx=10, pady=10)
 
         # Add Players
+        self.players.refresh()
         self.players.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
         # Add Rounds
