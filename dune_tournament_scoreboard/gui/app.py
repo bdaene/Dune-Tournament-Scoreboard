@@ -1,10 +1,11 @@
 import customtkinter as ctk
 
+from dune_tournament_scoreboard.controllers import tournament
 from dune_tournament_scoreboard.gui.players import Players
 from dune_tournament_scoreboard.gui.rounds import Rounds
 from dune_tournament_scoreboard.gui.scoreboard import Scoreboard
 from dune_tournament_scoreboard.gui.tournaments_selection import TournamentSelection
-from dune_tournament_scoreboard.gui.utils import center_frame
+from dune_tournament_scoreboard.gui.utils import center_frame, set_size_ratio, bind_fullscreen_keys
 
 
 class App(ctk.CTk):
@@ -20,8 +21,8 @@ class App(ctk.CTk):
         self.rounds = Rounds(self)
         self.scoreboard = Scoreboard(self)
 
-    def display(self, tournament_choice):
-        self.title('Dune Tournament Scoreboard - ' + tournament_choice)
+    def display(self):
+        self.title('Dune Tournament Scoreboard - ' + tournament.get_current())
 
         # Configure grid system
         self.grid_rowconfigure(0, weight=1)
@@ -43,14 +44,3 @@ class App(ctk.CTk):
         bind_fullscreen_keys(self)
         set_size_ratio(self, 0.9, 0.8)
         center_frame(self)
-
-
-def set_size_ratio(frame, width_ratio, height_ratio):
-    frame.geometry(
-        '{}x{}'.format(int(frame.winfo_screenwidth() * width_ratio), int(frame.winfo_screenheight() * height_ratio)))
-
-
-def bind_fullscreen_keys(frame):
-    frame.bind("<F11>",
-               lambda event: frame.attributes("-fullscreen", not frame.attributes("-fullscreen")))
-    frame.bind("<Escape>", lambda event: frame.attributes("-fullscreen", False))
