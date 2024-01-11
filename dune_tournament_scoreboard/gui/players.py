@@ -44,8 +44,9 @@ class Players(ctk.CTkFrame):
     def _add_player(self):
         dialog = ctk.CTkInputDialog(text="Nom du joueur", title="Ajouter un joueur")
         get_input = dialog.get_input()
-        tournament.create_player("", get_input)
-        self.refresh()
+        if get_input:
+            tournament.create_player("", get_input)
+            self.refresh()
 
     def _switch_player_status(self, player):
         return lambda: self._switch_status(player)

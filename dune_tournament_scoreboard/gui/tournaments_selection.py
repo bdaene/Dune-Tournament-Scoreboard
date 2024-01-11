@@ -37,5 +37,6 @@ class TournamentSelection(ctk.CTkToplevel):
     def _create_tournament(self):
         dialog = ctk.CTkInputDialog(text="Choisissez un nom de tournoi", title="Créer un tournoi")
         get_input = dialog.get_input()
-        tournament.create(get_input)
-        self._select_tournament(get_input)
+        if get_input:
+            tournament.create(get_input)
+            self._select_tournament(get_input)
