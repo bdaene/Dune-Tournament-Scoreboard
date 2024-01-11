@@ -28,7 +28,7 @@ class TournamentSelection(ctk.CTkToplevel):
 
         center_frame(self)
 
-        # If the user close the tournament selection, it should close exit the program
+        # If the user close the tournament selection, it should exit the program
         self.wm_protocol("WM_DELETE_WINDOW", lambda: exit(0))
 
     def _select_tournament(self, choice):
