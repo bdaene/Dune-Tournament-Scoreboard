@@ -14,14 +14,9 @@ class App(ctk.CTk):
         self.withdraw()
 
         # Select tournament
-        self.tournament_selection = TournamentSelection(self, self.display)
+        self.tournament_selection = TournamentSelection(self, self._display)
 
-        # Create other variables
-        self.players = Players(self)
-        self.rounds = Rounds(self)
-        self.scoreboard = Scoreboard(self)
-
-    def display(self):
+    def _display(self):
         self.title('Dune Tournament Scoreboard - ' + tournament.get_current())
 
         # Configure grid system
@@ -32,14 +27,16 @@ class App(ctk.CTk):
         self.configure(padx=10, pady=10)
 
         # Add Players
-        self.players.refresh()
-        self.players.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+        players = Players(self)
+        players.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
         # Add Rounds
-        self.rounds.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
+        rounds = Rounds(self)
+        rounds.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
 
         # Add Scoreboard
-        self.scoreboard.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")
+        scoreboard = Scoreboard(self)
+        scoreboard.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")
 
         # Size and position
         bind_fullscreen_keys(self)

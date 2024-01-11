@@ -14,14 +14,15 @@ class TournamentSelection(ctk.CTkToplevel):
         self.display_app = display_app
 
         # New tournament
-        tournament_creation_button = ctk.CTkButton(self, text="Créer un nouveau tournoi", command=_create_tournament)
+        tournament_creation_button = ctk.CTkButton(self, text="Créer un nouveau tournoi",
+                                                   command=self._create_tournament)
         tournament_creation_button.grid(row=0, column=0, padx=10, pady=10)
 
         # Existing tournaments
         tournaments = [element.replace('_', ' ') for element in tournament.list_tournaments()]
         if tournaments:
             selected_tournament = ctk.StringVar(value="Choisissez un tournoi existant")
-            available_tournaments = ctk.CTkOptionMenu(self, values=tournaments, command=_select_tournament,
+            available_tournaments = ctk.CTkOptionMenu(self, values=tournaments, command=self._select_tournament,
                                                       variable=selected_tournament)
             available_tournaments.grid(row=0, column=1, padx=10, pady=10)
 

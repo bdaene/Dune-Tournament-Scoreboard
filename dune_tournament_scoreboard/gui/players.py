@@ -13,6 +13,7 @@ from dune_tournament_scoreboard.controllers import tournament
 class Players(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
+        self.refresh()
 
     def refresh(self):
 
