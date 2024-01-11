@@ -20,3 +20,9 @@ def bind_fullscreen_keys(frame):
     frame.bind("<F11>",
                lambda event: frame.attributes("-fullscreen", not frame.attributes("-fullscreen")))
     frame.bind("<Escape>", lambda event: frame.attributes("-fullscreen", False))
+
+
+def enter_only_digits(entry, action_type) -> bool:
+    if action_type == '1' and not entry.isdigit():
+        return False
+    return True

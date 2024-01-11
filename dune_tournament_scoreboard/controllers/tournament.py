@@ -107,6 +107,11 @@ def create_new_round():
 
 
 @_check_current_tournament
+def list_rounds() -> list[Round]:
+    return _current_tournament.rounds
+
+
+@_check_current_tournament
 def list_tables(round_: int = -1) -> list[Table]:
     try:
         return _current_tournament.rounds[round_].tables
