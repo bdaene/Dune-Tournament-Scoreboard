@@ -9,13 +9,17 @@ class App(ctk.CTk):
 
         self.title('Dune Tournament Scoreboard')
 
+        self.grid_rowconfigure(0, weight=0)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+
         # Add Tournaments
         self.tournaments = Tournaments(self)
-        self.tournaments.pack(side="top", fill="x")
+        self.tournaments.grid(row=0, column=0, padx=5, pady=5, sticky="we")
 
         # Add current tournament
         self.currentTournament = CurrentTournament(self)
-        self.currentTournament.pack(fill="both", expand=True)
+        self.currentTournament.grid(row=1, column=0, padx=5, pady=5, sticky="nswe")
 
         # Size and position
         bind_fullscreen_keys(self)
