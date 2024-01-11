@@ -4,12 +4,6 @@ import customtkinter as ctk
 from dune_tournament_scoreboard.controllers import tournament
 
 
-# TODO
-# List players
-# Add players
-# Edit players (name/surname + active)
-
-
 class Players(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
