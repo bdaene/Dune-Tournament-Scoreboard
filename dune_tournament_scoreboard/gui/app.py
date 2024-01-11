@@ -1,43 +1,48 @@
 import customtkinter as ctk
 
-from dune_tournament_scoreboard.gui.tournaments import Tournaments, CurrentTournament
+from dune_tournament_scoreboard.gui.players import Players
+from dune_tournament_scoreboard.gui.rounds import Rounds
+from dune_tournament_scoreboard.gui.scoreboard import Scoreboard
+from dune_tournament_scoreboard.gui.tournaments_selection import TournamentSelection
+from dune_tournament_scoreboard.gui.utils import center_frame
 
 
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
+        self.withdraw()
 
-        self.title('Dune Tournament Scoreboard')
+        # Select tournament
+        self.tournament_selection = TournamentSelection(self, self.display)
 
-        self.grid_rowconfigure(0, weight=0)
-        self.grid_rowconfigure(1, weight=1)
+        # Create other variables
+        self.players = Players(self)
+        self.rounds = Rounds(self)
+        self.scoreboard = Scoreboard(self)
+
+    def display(self, tournament_choice):
+        self.title('Dune Tournament Scoreboard - ' + tournament_choice)
+
+        # Configure grid system
+        self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+        self.configure(padx=10, pady=10)
 
-        # Add Tournaments
-        self.tournaments = Tournaments(self)
-        self.tournaments.grid(row=0, column=0, padx=5, pady=5, sticky="we")
+        # Add Players
+        self.players.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
-        # Add current tournament
-        self.currentTournament = CurrentTournament(self)
-        self.currentTournament.grid(row=1, column=0, padx=5, pady=5, sticky="nswe")
+        # Add Rounds
+        self.rounds.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
+
+        # Add Scoreboard
+        self.scoreboard.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")
 
         # Size and position
         bind_fullscreen_keys(self)
         set_size_ratio(self, 0.9, 0.8)
         center_frame(self)
-
-
-def center_frame(frame):
-    frame.deiconify()  # Needed to make sure winfo_width and winfo_height are already set and not the default 200 200
-
-    # Set position
-    scale_factor = frame._get_window_scaling()
-    width = frame.winfo_width()
-    height = frame.winfo_height() + frame.winfo_rooty() - frame.winfo_y()  # Titlebar to take into account
-    pos_x_centered = int(frame.winfo_screenwidth() / 2 * scale_factor - width / 2)
-    pos_y_centered = int(frame.winfo_screenheight() / 2 * scale_factor - height / 2)
-    frame.geometry('+{}+{}'.format(pos_x_centered, pos_y_centered))
-    frame.deiconify()
 
 
 def set_size_ratio(frame, width_ratio, height_ratio):
