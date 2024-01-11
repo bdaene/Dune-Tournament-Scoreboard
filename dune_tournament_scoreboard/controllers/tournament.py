@@ -75,7 +75,16 @@ def update_player(player: Player):
 
 @_check_current_tournament
 def deactivate_player(player: PlayerId):
-    _current_tournament.players[player].is_active = False
+    switch_player_status(player, False)
+
+
+@_check_current_tournament
+def activate_player(player: PlayerId):
+    switch_player_status(player, True)
+
+
+def switch_player_status(player: PlayerId, activate):
+    _current_tournament.players[player].is_active = activate
 
     database.player.save(database.tournament.get_cursor(), player=_current_tournament.players[player])
     database.tournament.commit()
