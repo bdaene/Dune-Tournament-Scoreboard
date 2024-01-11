@@ -20,14 +20,14 @@ class App(ctk.CTk):
         self.players.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
 
         # Add Rounds
-        self.players = Rounds(self)
+        self.rounds = Rounds(self)
         self.grid_columnconfigure(1, weight=1)
-        self.players.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
+        self.rounds.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
 
         # Add Scoreboard
-        self.players = Scoreboard(self)
+        self.scoreboard = Scoreboard(self)
         self.grid_columnconfigure(2, weight=1)
-        self.players.grid(row=0, column=2, padx=20, pady=20, sticky="nsew")
+        self.scoreboard.grid(row=0, column=2, padx=20, pady=20, sticky="nsew")
 
         # Size and position
         bind_fullscreen_keys(self)
