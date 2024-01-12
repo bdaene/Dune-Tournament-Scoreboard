@@ -39,7 +39,7 @@ class App(ctk.CTk):
         rounds.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
 
         # Add Scoreboard
-        scoreboard = Scoreboard(self)
+        scoreboard = Scoreboard(self, event_handler=event_handler)
         scoreboard.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")
 
         # Size and position
