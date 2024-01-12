@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Any
+from uuid import uuid4
 
 
 class EventName(Enum):
@@ -13,17 +13,22 @@ class EventName(Enum):
 class EventHandler:
 
     def __init__(self):
-        self.subscribers_players = []
+        self.subscribers_players = dict()
         self.subscribers_global = []
 
     def subscribe_player(self, event_name: EventName, player_id, action):
-        self.subscribers_players.append((event_name, player_id, action))
+        key = uuid4().hex
+        self.subscribers_players.update({key: (event_name, player_id, action)})
+        return key
+
+    def unsubscribe_player(self, key):
+        self.subscribers_players.pop(key)
 
     def subscribe_global(self, event_name: EventName, action):
         self.subscribers_global.append((event_name, action))
 
     def fire_player(self, event_name: EventName, player_id):
-        for subscriber in self.subscribers_players:
+        for subscriber in self.subscribers_players.values():
             if subscriber[0] == event_name and subscriber[1] == player_id:
                 subscriber[2]()
         self.fire_global(event_name)

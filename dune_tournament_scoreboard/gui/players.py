@@ -16,6 +16,7 @@ class Players(ctk.CTkFrame):
         # Cleanup
         for grid_slave in self.grid_slaves():
             grid_slave.grid_remove()
+            grid_slave.destroy()
 
         # Title
         title = ctk.CTkLabel(self, text="Joueurs")

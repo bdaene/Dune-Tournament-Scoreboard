@@ -8,6 +8,7 @@ class Scoreboard(ctk.CTkFrame):
     def __init__(self, master, event_handler, **kwargs):
         super().__init__(master, **kwargs)
         self.event_handler = event_handler
+        self.events_to_unsubscribe = []
         self.event_handler.subscribe_global(EventName.PLAYER_SCORE_CHANGE, self._refresh)
         self.event_handler.subscribe_global(EventName.PLAYER_ADDED, self._refresh)
         self.event_handler.subscribe_global(EventName.NEW_ROUND, self._refresh)
@@ -18,7 +19,11 @@ class Scoreboard(ctk.CTkFrame):
 
         # Cleanup
         for grid_slave in self.grid_slaves():
+            for key in self.events_to_unsubscribe:
+                self.event_handler.unsubscribe_player(key)
+            self.events_to_unsubscribe.clear()
             grid_slave.grid_remove()
+            grid_slave.destroy()
 
         summary = tournament.get_summary()
         total_rounds = 0 if len(summary) == 0 else len(summary[0][1])
@@ -88,10 +93,12 @@ class Scoreboard(ctk.CTkFrame):
         if not player_info[0].is_active:
             player_name.configure(text_color="grey")
         player_name.grid(row=row_index, column=0, padx=5, pady=2, sticky="ew")
-        self.event_handler.subscribe_player(EventName.PLAYER_NAME_CHANGE, player_info[0].id,
-                                            lambda: player_name_variable.set(
-                                                tournament.get_player(player_info[0].id).surname))
-        self.event_handler.subscribe_player(EventName.PLAYER_STATUS_CHANGE, player_info[0].id,
-                                            lambda: player_name.configure(
-                                                text_color=default_color if tournament.get_player(
-                                                    player_info[0].id).is_active else "grey"))
+        self.events_to_unsubscribe.append(
+            self.event_handler.subscribe_player(EventName.PLAYER_NAME_CHANGE, player_info[0].id,
+                                                lambda: player_name_variable.set(
+                                                    tournament.get_player(player_info[0].id).surname)))
+        self.events_to_unsubscribe.append(
+            self.event_handler.subscribe_player(EventName.PLAYER_STATUS_CHANGE, player_info[0].id,
+                                                lambda: player_name.configure(
+                                                    text_color=default_color if tournament.get_player(
+                                                        player_info[0].id).is_active else "grey")))
