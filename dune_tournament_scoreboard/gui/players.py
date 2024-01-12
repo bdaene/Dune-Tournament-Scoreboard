@@ -60,7 +60,7 @@ class Players(ctk.CTkFrame):
     def _update_player_surname_and_register(self, player, player_name):
         player.surname = player_name.get()
         tournament.update_player(player)
-        self.event_handler.fire(EventName.PLAYER_NAME_CHANGE, player.id)
+        self.event_handler.fire_player(EventName.PLAYER_NAME_CHANGE, player.id)
 
     def _switch_player_status(self, player, entry_name, default_color):
         return lambda *args: self._switch_status(player, entry_name, default_color)
@@ -68,4 +68,4 @@ class Players(ctk.CTkFrame):
     def _switch_status(self, player, entry_name, default_color):
         tournament.switch_player_status(player.id, not player.is_active)
         entry_name.configure(text_color=default_color if player.is_active else "grey")
-        self.event_handler.fire(EventName.PLAYER_STATUS_CHANGE, player.id)
+        self.event_handler.fire_player(EventName.PLAYER_STATUS_CHANGE, player.id)

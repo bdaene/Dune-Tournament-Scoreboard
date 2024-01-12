@@ -11,12 +11,19 @@ class EventName(Enum):
 class EventHandler:
 
     def __init__(self):
-        self.subscribers = []
+        self.subscribers_players = []
+        self.subscribers_any_players = []
 
-    def subscribe(self, event_name: EventName, player_id, action):
-        self.subscribers.append((event_name, player_id, action))
+    def subscribe_player(self, event_name: EventName, player_id, action):
+        self.subscribers_players.append((event_name, player_id, action))
 
-    def fire(self, event_name: EventName, player_id):
-        for subscriber in self.subscribers:
+    def subscribe_any_player(self, event_name: EventName, action):
+        self.subscribers_any_players.append((event_name, action))
+
+    def fire_player(self, event_name: EventName, player_id):
+        for subscriber in self.subscribers_players:
             if subscriber[0] == event_name and subscriber[1] == player_id:
                 subscriber[2]()
+        for subscriber in self.subscribers_any_players:
+            if subscriber[0] == event_name:
+                subscriber[1]()

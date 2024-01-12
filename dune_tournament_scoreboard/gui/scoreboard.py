@@ -16,9 +16,20 @@ class Scoreboard(ctk.CTkFrame):
         super().__init__(master, **kwargs)
         self.event_handler = event_handler
 
+        self.event_handler.subscribe_any_player(EventName.PLAYER_SCORE_CHANGE, lambda: self._refresh())
+        self._refresh()
+
+    def _refresh(self):
+
+        # Cleanup
+        for grid_slave in self.grid_slaves():
+            grid_slave.grid_remove()
+
+        # Title
         self.label = ctk.CTkLabel(self, text="Scoreboard")
         self.label.grid(row=0, column=0, padx=20)
 
+        # Players
         for count, player_info in enumerate(tournament.get_summary()):
             self._add_player_row(count, player_info)
 
@@ -30,8 +41,10 @@ class Scoreboard(ctk.CTkFrame):
             player_name.configure(text_color="grey")
         player_name.grid(row=count + 1, column=0, padx=5, pady=2, sticky="w")
 
-        self.event_handler.subscribe(EventName.PLAYER_NAME_CHANGE,
-                                     lambda: player_name_variable.set(tournament.get_player(player_info[0].id).surname))
-        self.event_handler.subscribe(EventName.PLAYER_STATUS_CHANGE,
-                                     lambda: player_name.configure(text_color=default_color if tournament.get_player(
-                                         player_info[0].id).is_active else "grey"))
+        self.event_handler.subscribe_player(EventName.PLAYER_NAME_CHANGE, player_info[0].id,
+                                            lambda: player_name_variable.set(
+                                                tournament.get_player(player_info[0].id).surname))
+        self.event_handler.subscribe_player(EventName.PLAYER_STATUS_CHANGE, player_info[0].id,
+                                            lambda: player_name.configure(
+                                                text_color=default_color if tournament.get_player(
+                                                    player_info[0].id).is_active else "grey"))

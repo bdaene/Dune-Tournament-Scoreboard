@@ -136,7 +136,7 @@ class RoundsView(ctk.CTkTabview):
                                               int(water_variable.get()),
                                               int(troops_variable.get())),
                                         round_number - 1)
-                self.event_handler.fire(EventName.PLAYER_SCORE_CHANGE, player_id)
+                self.event_handler.fire_player(EventName.PLAYER_SCORE_CHANGE, player_id)
 
         tournament_points_variable.trace_variable('w', _update_player_score)
         victory_points_variable.trace_variable('w', _update_player_score)
@@ -174,5 +174,5 @@ class RoundsView(ctk.CTkTabview):
         player_name = ctk.CTkLabel(tab_frame, textvariable=player_name_variable)
         player_name.grid(row=row_index, column=2, **self.default_grid_text)
 
-        self.event_handler.subscribe(EventName.PLAYER_NAME_CHANGE, player_id,
-                                     lambda: player_name_variable.set(tournament.get_player(player_id).surname))
+        self.event_handler.subscribe_player(EventName.PLAYER_NAME_CHANGE, player_id,
+                                            lambda: player_name_variable.set(tournament.get_player(player_id).surname))
