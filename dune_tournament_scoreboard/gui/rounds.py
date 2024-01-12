@@ -102,7 +102,7 @@ class RoundsView(ctk.CTkTabview):
         seat_name.grid(row=row_index, column=1, **self.default_grid_text)
 
         # Name
-        self.add_player_name(player_id, row_index, tab_frame)
+        self._add_player_name(player_id, row_index, tab_frame)
 
         # Score
         tournament_points_variable = ctk.StringVar()
@@ -136,6 +136,7 @@ class RoundsView(ctk.CTkTabview):
                                               int(water_variable.get()),
                                               int(troops_variable.get())),
                                         round_number - 1)
+                self.event_handler.fire(EventName.PLAYER_SCORE_CHANGE, player_id)
 
         tournament_points_variable.trace_variable('w', _update_player_score)
         victory_points_variable.trace_variable('w', _update_player_score)
@@ -168,12 +169,12 @@ class RoundsView(ctk.CTkTabview):
         troops = ctk.CTkEntry(tab_frame, textvariable=troops_variable, **self.default_entry)
         troops.grid(row=row_index, column=8, **self.default_grid_number)
 
-    def add_player_name(self, player_id, row_index, tab_frame):
+    def _add_player_name(self, player_id, row_index, tab_frame):
         player_name = ctk.CTkLabel(tab_frame, text=tournament.get_player(player_id).surname)
         player_name.grid(row=row_index, column=2, **self.default_grid_text)
 
-        def update_player_name(player_id_event):
+        def _update_player_name(player_id_event):
             if player_id_event == player_id:
                 player_name.configure(text=tournament.get_player(player_id).surname)
 
-        self.event_handler.subscribe(EventName.PLAYER_NAME_CHANGE, update_player_name)
+        self.event_handler.subscribe(EventName.PLAYER_NAME_CHANGE, _update_player_name)
