@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from attr import astuple
 
 from dune_tournament_scoreboard.controllers import tournament
 from dune_tournament_scoreboard.gui.event_handler import EventName
@@ -40,16 +41,12 @@ class Scoreboard(ctk.CTkFrame):
         # Headers
         for i in range(total_rounds):
             ctk.CTkLabel(self, text="Ronde {}".format(i + 1)).grid(row=1, column=i + 1, **self.default_grid_text)
-        ctk.CTkLabel(self, text="PT").grid(row=1, column=total_rounds + 1, **self.default_grid_text)
-        ctk.CTkLabel(self, text="PV").grid(row=1, column=total_rounds + 2, **self.default_grid_text)
-        ctk.CTkLabel(self, text="Épice").grid(row=1, column=total_rounds + 3, **self.default_grid_text)
-        ctk.CTkLabel(self, text="Solaris").grid(row=1, column=total_rounds + 4, **self.default_grid_text)
-        ctk.CTkLabel(self, text="Eau").grid(row=1, column=total_rounds + 5, **self.default_grid_text)
-        ctk.CTkLabel(self, text="Troupes").grid(row=1, column=total_rounds + 6, **self.default_grid_text)
+        for column, label in enumerate(("PT", "PV", "Épice", "Solaris", "Eau", "Troupes"), total_rounds + 1):
+            ctk.CTkLabel(self, text=label).grid(row=1, column=column, **self.default_grid_text)
 
         # Players
-        for count, player_info in enumerate(summary):
-            self._add_player_row(count + 2, player_info)
+        for row, player_info in enumerate(summary, 2):
+            self._add_player_row(row, player_info)
 
     def _add_player_row(self, row_index, player_info):
         self._add_player_name(row_index, player_info)
@@ -58,33 +55,17 @@ class Scoreboard(ctk.CTkFrame):
         self._add_scores(player_info, row_index)
 
     def _add_scores(self, player_info, row_index):
+        player, tournament_points, score = player_info
 
         # Rounds
-        total_rounds = len(player_info[1])
-        for round_index, round_tournament_points in enumerate(player_info[1]):
-            ctk.CTkLabel(self, text=round_tournament_points).grid(row=row_index, column=round_index + 1,
+        total_rounds = len(tournament_points)
+        for column, round_tournament_points in enumerate(tournament_points, 1):
+            ctk.CTkLabel(self, text=round_tournament_points).grid(row=row_index, column=column,
                                                                   **self.default_grid_text)
 
         # Total score
-        player_score = player_info[2]
-        # Tournament points
-        tournament_points = ctk.CTkLabel(self, text=player_score.tournament_points, )
-        tournament_points.grid(row=row_index, column=total_rounds + 1, **self.default_grid_text)
-        # Victory points
-        victory_points = ctk.CTkLabel(self, text=player_score.victory_points)
-        victory_points.grid(row=row_index, column=total_rounds + 2, **self.default_grid_text)
-        # Spice
-        spice = ctk.CTkLabel(self, text=player_score.spice)
-        spice.grid(row=row_index, column=total_rounds + 3, **self.default_grid_text)
-        # Solaris
-        solaris = ctk.CTkLabel(self, text=player_score.solaris)
-        solaris.grid(row=row_index, column=total_rounds + 4, **self.default_grid_text)
-        # Water
-        water = ctk.CTkLabel(self, text=player_score.water)
-        water.grid(row=row_index, column=total_rounds + 5, **self.default_grid_text)
-        # Troops in garrison
-        troops = ctk.CTkLabel(self, text=player_score.troops_in_garrison)
-        troops.grid(row=row_index, column=total_rounds + 6, **self.default_grid_text)
+        for column, value in enumerate(astuple(score), total_rounds + 1):
+            ctk.CTkLabel(self, text=value).grid(row=row_index, column=column, **self.default_grid_text)
 
     def _add_player_name(self, row_index, player_info):
         player_name_variable = ctk.StringVar(value=player_info[0].surname)

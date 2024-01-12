@@ -13,7 +13,7 @@ class EventName(Enum):
 class EventHandler:
 
     def __init__(self):
-        self.subscribers_players = dict()
+        self.subscribers_players = {}
         self.subscribers_global = []
 
     def subscribe_player(self, event_name: EventName, player_id, action):

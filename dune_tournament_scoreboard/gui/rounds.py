@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from attr import astuple, fields
 
 from dune_tournament_scoreboard.assets.score import Score
 from dune_tournament_scoreboard.controllers import tournament
@@ -44,15 +45,15 @@ class RoundsView(ctk.CTkTabview):
         self.default_grid_number = {"padx": 1, "pady": 2, "sticky": "ew"}
         self.default_grid_text = {"padx": 1, "pady": 2, "sticky": "w"}
 
-        for round_index, round in enumerate(tournament.list_rounds()):
-            self.add_round(round, round_index + 1)
+        for round_index, round_ in enumerate(tournament.list_rounds(), 1):
+            self.add_round(round_, round_index)
 
-        # Select last round
-        if len(tournament.list_rounds()) > 0:
-            self.select_last_round()
+        self.select_last_round()
 
     def select_last_round(self):
-        self.set("Ronde {}".format(len(tournament.list_rounds())))
+        last_round = len(tournament.list_rounds())
+        if last_round > 0:
+            self.set(f"Ronde {last_round}")
 
     def add_round(self, round, round_number):
         round_name = "Ronde {}".format(round_number)
@@ -65,112 +66,54 @@ class RoundsView(ctk.CTkTabview):
         tab_frame.grid_columnconfigure(0, weight=1)
         tab_frame.grid_columnconfigure(1, weight=1)
         tab_frame.grid_columnconfigure(2, weight=5)
-        tab_frame.grid_columnconfigure(3, weight=0, uniform="same_group")
-        tab_frame.grid_columnconfigure(4, weight=0, uniform="same_group")
-        tab_frame.grid_columnconfigure(5, weight=0, uniform="same_group")
-        tab_frame.grid_columnconfigure(6, weight=0, uniform="same_group")
-        tab_frame.grid_columnconfigure(7, weight=0, uniform="same_group")
-        tab_frame.grid_columnconfigure(8, weight=0, uniform="same_group")
+        for i in range(3, 9):
+            tab_frame.grid_columnconfigure(i, weight=0, uniform="same_group")
 
         # Headers
-        tp_header = ctk.CTkLabel(tab_frame, text="PT")
-        tp_header.grid(row=0, column=3, **self.default_grid_text)
-        vp_header = ctk.CTkLabel(tab_frame, text="PV")
-        vp_header.grid(row=0, column=4, **self.default_grid_text)
-        spice_header = ctk.CTkLabel(tab_frame, text="Épice")
-        spice_header.grid(row=0, column=5, **self.default_grid_text)
-        solaris_header = ctk.CTkLabel(tab_frame, text="Solaris")
-        solaris_header.grid(row=0, column=6, **self.default_grid_text)
-        water_header = ctk.CTkLabel(tab_frame, text="Eau")
-        water_header.grid(row=0, column=7, **self.default_grid_text)
-        troops_header = ctk.CTkLabel(tab_frame, text="Troupes")
-        troops_header.grid(row=0, column=8, **self.default_grid_text)
+        for i, label in enumerate(("PT", "PV", "Épice", "Solaris", "Eau", "Troupes"), 3):
+            ctk.CTkLabel(tab_frame, text=label).grid(row=0, column=i, **self.default_grid_text)
 
         # Tables
         row_index = 0
-        for table_index, table in enumerate(round.tables):
+        for table_index, table in enumerate(round.tables, 1):
+            row_index += 1
             separator = ctk.CTkLabel(tab_frame, text="", height=2)
-            separator.grid(row=(row_index := row_index + 1), column=0, columnspan=9)
-            table_name = ctk.CTkLabel(tab_frame, text="Table {}".format(table_index + 1))
+            separator.grid(row=row_index, column=0, columnspan=9)
+            table_name = ctk.CTkLabel(tab_frame, text=f"Table {table_index}")
             table_name.grid(row=row_index + 1, column=0, **self.default_grid_text)
 
             # Players
-            for player_index, player_id in enumerate(table):
+            for seat, player_id in enumerate(table, 1):
                 row_index += 1
-                self._add_player(player_id, player_index, round, row_index, tab_frame, round_number)
+                self._add_player(player_id, seat, round, row_index, tab_frame, round_number)
 
-    def _add_player(self, player_id, player_index, round, row_index, tab_frame, round_number):
+    def _add_player(self, player_id, seat, round_, row_index, tab_frame, round_number):
         # Position
-        seat_name = ctk.CTkLabel(tab_frame, text="Position {}".format(player_index + 1))
+        seat_name = ctk.CTkLabel(tab_frame, text=f"Position {seat}")
         seat_name.grid(row=row_index, column=1, **self.default_grid_text)
 
         # Name
         self._add_player_name(player_id, row_index, tab_frame)
 
         # Score
-        tournament_points_variable = ctk.StringVar()
-        victory_points_variable = ctk.StringVar()
-        spice_variable = ctk.StringVar()
-        solaris_variable = ctk.StringVar()
-        water_variable = ctk.StringVar()
-        troops_variable = ctk.StringVar()
+        scores_variables = [ctk.StringVar() for _ in fields(Score)]
 
-        score = round.scores.get(player_id)
+        score = round_.scores.get(player_id)
         if score:
-            tournament_points_variable.set(score.tournament_points)
-            victory_points_variable.set(score.victory_points)
-            spice_variable.set(score.spice)
-            solaris_variable.set(score.solaris)
-            water_variable.set(score.water)
-            troops_variable.set(score.troops_in_garrison)
+            for variable, value in zip(scores_variables, astuple(score)):
+                variable.set(value)
 
         def _update_player_score(*args):
-            if (tournament_points_variable.get()
-                    and victory_points_variable.get()
-                    and spice_variable.get()
-                    and solaris_variable.get()
-                    and water_variable.get()
-                    and troops_variable.get()):
+            if all(variable_.get() for variable_ in scores_variables):
                 tournament.update_score(player_id,
-                                        Score(int(tournament_points_variable.get()),
-                                              int(victory_points_variable.get()),
-                                              int(spice_variable.get()),
-                                              int(solaris_variable.get()),
-                                              int(water_variable.get()),
-                                              int(troops_variable.get())),
+                                        Score(*(int(variable_.get()) for variable_ in scores_variables)),
                                         round_number - 1)
                 self.event_handler.fire_player(EventName.PLAYER_SCORE_CHANGE, player_id)
 
-        tournament_points_variable.trace_variable('w', _update_player_score)
-        victory_points_variable.trace_variable('w', _update_player_score)
-        spice_variable.trace_variable('w', _update_player_score)
-        solaris_variable.trace_variable('w', _update_player_score)
-        water_variable.trace_variable('w', _update_player_score)
-        troops_variable.trace_variable('w', _update_player_score)
-
-        # Tournament points
-        tournament_points = ctk.CTkEntry(tab_frame, textvariable=tournament_points_variable, **self.default_entry)
-        tournament_points.grid(row=row_index, column=3, **self.default_grid_number)
-
-        # Victory points
-        victory_points = ctk.CTkEntry(tab_frame, textvariable=victory_points_variable, **self.default_entry)
-        victory_points.grid(row=row_index, column=4, **self.default_grid_number)
-
-        # Spice
-        spice = ctk.CTkEntry(tab_frame, textvariable=spice_variable, **self.default_entry)
-        spice.grid(row=row_index, column=5, **self.default_grid_number)
-
-        # Solaris
-        solaris = ctk.CTkEntry(tab_frame, textvariable=solaris_variable, **self.default_entry)
-        solaris.grid(row=row_index, column=6, **self.default_grid_number)
-
-        # Water
-        water = ctk.CTkEntry(tab_frame, textvariable=water_variable, **self.default_entry)
-        water.grid(row=row_index, column=7, **self.default_grid_number)
-
-        # Troops in garrison
-        troops = ctk.CTkEntry(tab_frame, textvariable=troops_variable, **self.default_entry)
-        troops.grid(row=row_index, column=8, **self.default_grid_number)
+        for column, variable in enumerate(scores_variables, 3):
+            variable.trace_variable('w', _update_player_score)
+            entry = ctk.CTkEntry(tab_frame, textvariable=variable, **self.default_entry)
+            entry.grid(row=row_index, column=column, **self.default_grid_number)
 
     def _add_player_name(self, player_id, row_index, tab_frame):
         player_name_variable = ctk.StringVar(value=tournament.get_player(player_id).surname)

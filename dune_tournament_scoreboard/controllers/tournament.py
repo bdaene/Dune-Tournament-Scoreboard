@@ -62,7 +62,7 @@ def get_player(player_id: PlayerId) -> Optional[Player]:
 @_check_current_tournament
 def list_players() -> list[Player]:
     return sorted(_current_tournament.players.values(),
-                  key=lambda player: (player.name.upper(), player.surname.title()))
+                  key=lambda player: (player.surname.title(), player.name.upper()))
 
 
 @_check_current_tournament
@@ -75,15 +75,16 @@ def update_player(player: Player):
 
 @_check_current_tournament
 def deactivate_player(player: PlayerId):
-    switch_player_status(player, False)
+    set_player_status(player, False)
 
 
 @_check_current_tournament
 def activate_player(player: PlayerId):
-    switch_player_status(player, True)
+    set_player_status(player, True)
 
 
-def switch_player_status(player: PlayerId, activate):
+@_check_current_tournament
+def set_player_status(player: PlayerId, activate):
     _current_tournament.players[player].is_active = activate
 
     database.player.save(database.tournament.get_cursor(), player=_current_tournament.players[player])

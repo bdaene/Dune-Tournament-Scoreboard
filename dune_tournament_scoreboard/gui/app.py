@@ -15,10 +15,10 @@ class App(ctk.CTk):
         self.withdraw()
 
         # Select tournament
-        self.tournament_selection = TournamentSelection(self, self._display)
+        self.tournament_selection = TournamentSelection(self)
 
-    def _display(self):
-        self.title('Dune Tournament Scoreboard - ' + tournament.get_current())
+    def display(self):
+        self.title('Dune Tournament Scoreboard - ' + tournament.get_current().replace('_', ' '))
 
         # Configure grid system
         self.grid_rowconfigure(0, weight=1)

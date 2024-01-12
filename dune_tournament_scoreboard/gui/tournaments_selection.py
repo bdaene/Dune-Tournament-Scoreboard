@@ -6,12 +6,12 @@ from dune_tournament_scoreboard.gui.utils import *
 
 
 class TournamentSelection(ctk.CTkToplevel):
-    def __init__(self, master, display_app, **kwargs):
+    def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
         self.title("Sélection du tournoi")
 
         # Save display function
-        self.display_app = display_app
+        self.display_app = master.display
 
         # New tournament
         tournament_creation_button = ctk.CTkButton(self, text="Créer un nouveau tournoi",
