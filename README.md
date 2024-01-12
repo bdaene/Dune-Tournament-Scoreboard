@@ -12,7 +12,10 @@ Then, you should have the command `scoreboard` available in the terminal.
 
 ## Build
 
-Use `pyinstaller .\dune_tournament_scoreboard\cli\main.py --name scoreboard` to build a standalone executable of the application.
+To build a standalone executable using pyinstaller:   
+```
+pyinstaller .\dune_tournament_scoreboard\cli\main.py --name scoreboard --icon=.\dune_tournament_scoreboard\images\dune.ico
+```
 
 ## Usage
 
@@ -182,6 +185,19 @@ I implemented the same logic in an Excel workbook with macros (VBA).
 It may be simpler to use.
 
 You can find into `excel/tournoi.xlsm` (in French).
+
+## GUI version
+
+Thanks to Christophe Broeckx who implemented a GUI for the application.
+
+![scoreboard-gui.png](dune_tournament_scoreboard/images/img.png)
+
+### Build
+
+To build a standalone executable using pyinstaller:   
+```
+pyinstaller .\dune_tournament_scoreboard\gui\main.py --name scoreboard-gui --onefile --noconsole --icon=.\dune_tournament_scoreboard\images\dune.ico
+```
 
 ## Contact
 
