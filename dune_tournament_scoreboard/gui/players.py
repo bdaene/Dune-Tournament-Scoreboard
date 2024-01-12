@@ -8,10 +8,10 @@ class Players(ctk.CTkFrame):
     def __init__(self, master, event_handler, **kwargs):
         super().__init__(master, **kwargs)
         self.event_handler = event_handler
-        self.event_handler.subscribe_any_player(EventName.PLAYER_ADDED, self.refresh)
-        self.refresh()
+        self.event_handler.subscribe_any_player(EventName.PLAYER_ADDED, self._refresh)
+        self._refresh()
 
-    def refresh(self):
+    def _refresh(self):
 
         # Cleanup
         for grid_slave in self.grid_slaves():
