@@ -8,7 +8,7 @@ class Players(ctk.CTkFrame):
     def __init__(self, master, event_handler, **kwargs):
         super().__init__(master, **kwargs)
         self.event_handler = event_handler
-        self.event_handler.subscribe_any_player(EventName.PLAYER_ADDED, self._refresh)
+        self.event_handler.subscribe_global(EventName.PLAYER_ADDED, self._refresh)
         self._refresh()
 
     def _refresh(self):
@@ -53,7 +53,7 @@ class Players(ctk.CTkFrame):
         get_input = dialog.get_input()
         if get_input:
             tournament.create_player("", get_input)
-            self.event_handler.fire_player(EventName.PLAYER_ADDED, "")
+            self.event_handler.fire_global(EventName.PLAYER_ADDED)
 
     def _update_player_surname(self, player, player_name):
         return lambda *args: self._update_player_surname_and_register(player, player_name)

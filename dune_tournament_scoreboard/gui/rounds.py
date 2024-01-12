@@ -9,6 +9,7 @@ from dune_tournament_scoreboard.gui.utils import enter_only_digits
 class Rounds(ctk.CTkFrame):
     def __init__(self, master, event_handler, **kwargs):
         super().__init__(master, **kwargs)
+        self.event_handler = event_handler
 
         # Title
         title = ctk.CTkLabel(self, text="Rondes")
@@ -28,6 +29,7 @@ class Rounds(ctk.CTkFrame):
         rounds = tournament.list_rounds()
         self.rounds_view.add_round(rounds[-1], len(rounds))
         self.rounds_view.select_last_round()
+        self.event_handler.fire_global(EventName.NEW_ROUND)
 
 
 class RoundsView(ctk.CTkTabview):
@@ -46,7 +48,8 @@ class RoundsView(ctk.CTkTabview):
             self.add_round(round, round_index + 1)
 
         # Select last round
-        self.select_last_round()
+        if len(tournament.list_rounds()) > 0:
+            self.select_last_round()
 
     def select_last_round(self):
         self.set("Ronde {}".format(len(tournament.list_rounds())))
