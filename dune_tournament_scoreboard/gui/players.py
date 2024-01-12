@@ -32,8 +32,8 @@ class Players(ctk.CTkFrame):
             is_active_switch.grid(row=count + 1, column=1, padx=5, pady=2, sticky="e")
 
         # Add player button
-        create_player_button = ctk.CTkButton(self, text="Ajouter un joueur", command=self._add_player)
-        create_player_button.grid(row=len(players) + 1, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+        add_player_button = ctk.CTkButton(self, text="Ajouter un joueur", command=self._add_player)
+        add_player_button.grid(row=len(players) + 1, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
 
     def _add_player(self):
         dialog = ctk.CTkInputDialog(text="Nom du joueur", title="Ajouter un joueur")
