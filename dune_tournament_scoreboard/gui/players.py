@@ -7,6 +7,23 @@ from dune_tournament_scoreboard.gui.event_handler import EventName, event_handle
 class Players(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
+
+        # Title
+        title = ctk.CTkLabel(self, text="Joueurs")
+        title.pack(side="top", fill="x")
+
+        # Players
+        players_list = PlayersList(self)
+        players_list.pack(expand=1, fill="both", padx=5, pady=5)
+
+        # Add player button
+        add_player_button = ctk.CTkButton(self, text="Ajouter un joueur", command=_add_new_player)
+        add_player_button.pack(side="bottom", fill="x")
+
+
+class PlayersList(ctk.CTkScrollableFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
         event_handler.subscribe_global(EventName.PLAYER_ADDED, self._refresh)
         self._refresh()
 
@@ -17,19 +34,10 @@ class Players(ctk.CTkFrame):
             grid_slave.grid_remove()
             grid_slave.destroy()
 
-        # Title
-        title = ctk.CTkLabel(self, text="Joueurs")
-        self.grid_columnconfigure(0, weight=1)
-        title.grid(row=0, column=0, columnspan=2, padx=20)
-
         # Players
         players = tournament.list_players()
         for count, player in enumerate(players):
             self._add_player_row(count, player)
-
-        # Add player button
-        add_player_button = ctk.CTkButton(self, text="Ajouter un joueur", command=_add_new_player)
-        add_player_button.grid(row=len(players) + 1, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
 
     def _add_player_row(self, count, player):
         player_name = ctk.StringVar(value=player.surname)
@@ -39,14 +47,14 @@ class Players(ctk.CTkFrame):
         default_color = name.cget("text_color")
         if not player.is_active:
             name.configure(text_color="grey")
-        name.grid(row=count + 1, column=0, padx=5, pady=2, sticky="ew")
+        name.grid(row=count, column=0, padx=5, pady=2, sticky="ew")
 
         is_active = ctk.BooleanVar(value=player.is_active)
         is_active.trace_variable('w', _switch_player_status(player=player, entry_name=name,
                                                             default_color=default_color))
 
         is_active_switch = ctk.CTkSwitch(self, text="", onvalue=True, offvalue=False, variable=is_active)
-        is_active_switch.grid(row=count + 1, column=1, padx=5, pady=2, sticky="e")
+        is_active_switch.grid(row=count, column=1, padx=5, pady=2, sticky="e")
 
 
 def _add_new_player():
