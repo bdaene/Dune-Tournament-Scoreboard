@@ -2,11 +2,12 @@ import customtkinter as ctk
 
 from dune_tournament_scoreboard.assets.score import Score
 from dune_tournament_scoreboard.controllers import tournament
+from dune_tournament_scoreboard.gui.event_handler import EventName
 from dune_tournament_scoreboard.gui.utils import enter_only_digits
 
 
 class Rounds(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
+    def __init__(self, master, event_handler, **kwargs):
         super().__init__(master, **kwargs)
 
         # Title
@@ -15,7 +16,7 @@ class Rounds(ctk.CTkFrame):
         title.grid(row=0, column=0, padx=20)
 
         # Rounds
-        self.rounds_view = RoundsView(self)
+        self.rounds_view = RoundsView(self, event_handler)
         self.rounds_view.grid(row=1, column=0, padx=5, sticky="ew")
 
         # Add round button
@@ -30,8 +31,9 @@ class Rounds(ctk.CTkFrame):
 
 
 class RoundsView(ctk.CTkTabview):
-    def __init__(self, master, **kwargs):
+    def __init__(self, master, event_handler, **kwargs):
         super().__init__(master, **kwargs)
+        self.event_handler = event_handler
 
         self.configure(anchor="nw")
 
@@ -98,9 +100,9 @@ class RoundsView(ctk.CTkTabview):
         # Position
         seat_name = ctk.CTkLabel(tab_frame, text="Position {}".format(player_index + 1))
         seat_name.grid(row=row_index, column=1, **self.default_grid_text)
+
         # Name
-        player_name = ctk.CTkLabel(tab_frame, text=tournament.get_player(player_id).surname)
-        player_name.grid(row=row_index, column=2, **self.default_grid_text)
+        self.add_player_name(player_id, row_index, tab_frame)
 
         # Score
         tournament_points_variable = ctk.StringVar()
@@ -165,3 +167,13 @@ class RoundsView(ctk.CTkTabview):
         # Troops in garrison
         troops = ctk.CTkEntry(tab_frame, textvariable=troops_variable, **self.default_entry)
         troops.grid(row=row_index, column=8, **self.default_grid_number)
+
+    def add_player_name(self, player_id, row_index, tab_frame):
+        player_name = ctk.CTkLabel(tab_frame, text=tournament.get_player(player_id).surname)
+        player_name.grid(row=row_index, column=2, **self.default_grid_text)
+
+        def update_player_name(player_id_event):
+            if player_id_event == player_id:
+                player_name.configure(text=tournament.get_player(player_id).surname)
+
+        self.event_handler.subscribe(EventName.PLAYER_NAME_CHANGE, update_player_name)

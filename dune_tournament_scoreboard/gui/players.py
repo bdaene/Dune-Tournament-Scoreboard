@@ -1,20 +1,13 @@
 import customtkinter as ctk
 
 from dune_tournament_scoreboard.controllers import tournament
-
-
-def _update_player_surname_and_register(player, player_name):
-    player.surname = player_name.get()
-    tournament.update_player(player)
-
-
-def _update_player_surname(player, player_name):
-    return lambda event: _update_player_surname_and_register(player, player_name)
+from dune_tournament_scoreboard.gui.event_handler import EventName
 
 
 class Players(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
+    def __init__(self, master, event_handler, **kwargs):
         super().__init__(master, **kwargs)
+        self.event_handler = event_handler
         self.refresh()
 
     def refresh(self):
@@ -34,8 +27,8 @@ class Players(ctk.CTkFrame):
             player_name = ctk.StringVar(value=player.surname)
             is_active = ctk.BooleanVar(value=player.is_active)
             name = ctk.CTkEntry(self, textvariable=player_name, text_color="white" if is_active.get() else "grey")
-            name.bind(sequence="<FocusOut>",
-                      command=_update_player_surname(player=player, player_name=player_name))
+            name.bind(sequence="<Return>",
+                      command=self._update_player_surname(player=player, player_name=player_name))
             name.grid(row=count + 1, column=0, padx=5, pady=2, sticky="ew")
             is_active_switch = ctk.CTkSwitch(self, text="", onvalue=True, offvalue=False, variable=is_active,
                                              command=self._switch_player_status(player=player))
@@ -51,6 +44,14 @@ class Players(ctk.CTkFrame):
         if get_input:
             tournament.create_player("", get_input)
             self.refresh()
+
+    def _update_player_surname(self, player, player_name):
+        return lambda event: self._update_player_surname_and_register(player, player_name)
+
+    def _update_player_surname_and_register(self, player, player_name):
+        player.surname = player_name.get()
+        tournament.update_player(player)
+        self.event_handler.fire(EventName.PLAYER_NAME_CHANGE, player.id)
 
     def _switch_player_status(self, player):
         return lambda: self._switch_status(player)
