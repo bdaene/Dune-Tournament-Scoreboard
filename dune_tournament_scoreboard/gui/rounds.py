@@ -3,14 +3,13 @@ from attr import astuple, fields
 
 from dune_tournament_scoreboard.assets.score import Score
 from dune_tournament_scoreboard.controllers import tournament
-from dune_tournament_scoreboard.gui.event_handler import EventName
+from dune_tournament_scoreboard.gui.event_handler import EventName, event_handler
 from dune_tournament_scoreboard.gui.utils import enter_only_digits
 
 
 class Rounds(ctk.CTkFrame):
-    def __init__(self, master, event_handler, **kwargs):
+    def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.event_handler = event_handler
 
         # Title
         title = ctk.CTkLabel(self, text="Rondes")
@@ -18,7 +17,7 @@ class Rounds(ctk.CTkFrame):
         title.grid(row=0, column=0, padx=20)
 
         # Rounds
-        self.rounds_view = RoundsView(self, event_handler)
+        self.rounds_view = RoundsView(self)
         self.rounds_view.grid(row=1, column=0, padx=5, sticky="ew")
 
         # Add round button
@@ -30,13 +29,12 @@ class Rounds(ctk.CTkFrame):
         rounds = tournament.list_rounds()
         self.rounds_view.add_round(rounds[-1], len(rounds))
         self.rounds_view.select_last_round()
-        self.event_handler.fire_global(EventName.NEW_ROUND)
+        event_handler.fire_global(EventName.NEW_ROUND)
 
 
 class RoundsView(ctk.CTkTabview):
-    def __init__(self, master, event_handler, **kwargs):
+    def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.event_handler = event_handler
 
         self.configure(anchor="nw")
 
@@ -108,7 +106,7 @@ class RoundsView(ctk.CTkTabview):
                 tournament.update_score(player_id,
                                         Score(*(int(variable_.get()) for variable_ in scores_variables)),
                                         round_number - 1)
-                self.event_handler.fire_player(EventName.PLAYER_SCORE_CHANGE, player_id)
+                event_handler.fire_player(EventName.PLAYER_SCORE_CHANGE, player_id)
 
         for column, variable in enumerate(scores_variables, 3):
             variable.trace_variable('w', _update_player_score)
@@ -120,5 +118,5 @@ class RoundsView(ctk.CTkTabview):
         player_name = ctk.CTkLabel(tab_frame, textvariable=player_name_variable)
         player_name.grid(row=row_index, column=2, **self.default_grid_text)
 
-        self.event_handler.subscribe_player(EventName.PLAYER_NAME_CHANGE, player_id,
-                                            lambda: player_name_variable.set(tournament.get_player(player_id).surname))
+        event_handler.subscribe_player(EventName.PLAYER_NAME_CHANGE, player_id,
+                                       lambda: player_name_variable.set(tournament.get_player(player_id).surname))

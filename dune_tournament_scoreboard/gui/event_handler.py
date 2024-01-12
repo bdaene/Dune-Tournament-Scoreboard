@@ -37,3 +37,6 @@ class EventHandler:
         for subscriber in self.subscribers_global:
             if subscriber[0] == event_name:
                 subscriber[1]()
+
+
+event_handler = EventHandler()

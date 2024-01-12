@@ -1,7 +1,6 @@
 import customtkinter as ctk
 
 from dune_tournament_scoreboard.controllers import tournament
-from dune_tournament_scoreboard.gui.event_handler import EventHandler
 from dune_tournament_scoreboard.gui.players import Players
 from dune_tournament_scoreboard.gui.rounds import Rounds
 from dune_tournament_scoreboard.gui.scoreboard import Scoreboard
@@ -27,19 +26,16 @@ class App(ctk.CTk):
         self.grid_columnconfigure(2, weight=2)
         self.configure(padx=10, pady=10)
 
-        # Create event handler
-        event_handler = EventHandler()
-
         # Add Players
-        players = Players(self, event_handler=event_handler)
+        players = Players(self)
         players.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
         # Add Rounds
-        rounds = Rounds(self, event_handler=event_handler)
+        rounds = Rounds(self)
         rounds.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
 
         # Add Scoreboard
-        scoreboard = Scoreboard(self, event_handler=event_handler)
+        scoreboard = Scoreboard(self)
         scoreboard.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")
 
         # Size and position
