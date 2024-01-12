@@ -4,7 +4,7 @@ from typing import List, Any
 
 class EventName(Enum):
     PLAYER_NAME_CHANGE = 1
-    PLAYER_SCORE_CHANGE = 2
+    PLAYER_STATUS_CHANGE = 2
 
 
 class EventHandler:
