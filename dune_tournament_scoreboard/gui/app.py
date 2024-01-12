@@ -1,3 +1,5 @@
+from importlib import resources
+
 import customtkinter as ctk
 
 from dune_tournament_scoreboard.controllers import tournament
@@ -12,6 +14,8 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.withdraw()
+        with resources.files('dune_tournament_scoreboard.images') / 'dune.ico' as icon:
+            self.iconbitmap(icon)
 
         # Select tournament
         self.tournament_selection = TournamentSelection(self)

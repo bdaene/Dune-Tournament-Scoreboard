@@ -196,7 +196,7 @@ Thanks to Christophe Broeckx who implemented a GUI for the application.
 
 To build a standalone executable using pyinstaller:   
 ```
-pyinstaller .\dune_tournament_scoreboard\gui\main.py --name scoreboard-gui --onefile --noconsole --icon=.\dune_tournament_scoreboard\images\dune.ico
+pyinstaller .\dune_tournament_scoreboard\gui\main.py --name scoreboard-gui --onefile --noconsole --icon=.\dune_tournament_scoreboard\images\dune.ico --add-data=dune_tournament_scoreboard\images\dune.ico:dune_tournament_scoreboard\images
 ```
 
 ## Contact

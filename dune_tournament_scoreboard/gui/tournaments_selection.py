@@ -1,4 +1,5 @@
 from tkinter import messagebox
+
 import customtkinter as ctk
 
 from dune_tournament_scoreboard.controllers import tournament
