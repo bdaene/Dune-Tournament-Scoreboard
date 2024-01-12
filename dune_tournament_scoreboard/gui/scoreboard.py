@@ -1,3 +1,5 @@
+import tkinter
+
 import customtkinter as ctk
 from attr import astuple
 
@@ -6,6 +8,21 @@ from dune_tournament_scoreboard.gui.event_handler import EventName, event_handle
 
 
 class Scoreboard(ctk.CTkFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self._refresh()
+
+    def _refresh(self):
+        # Title
+        label = ctk.CTkLabel(self, text="Classement")
+        label.pack(side=tkinter.TOP)
+
+        # Grid
+        grid = ScoreboardGrid(self)
+        grid.pack(fill=tkinter.BOTH)
+
+
+class ScoreboardGrid(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
         self.events_to_unsubscribe = []
@@ -30,21 +47,17 @@ class Scoreboard(ctk.CTkFrame):
 
         # Grid configuration
         self.grid_columnconfigure(0, weight=1)
-        for i in range(1, total_rounds + 7):
-            self.grid_columnconfigure(i, weight=0, uniform="same_group")
-
-        # Title
-        label = ctk.CTkLabel(self, text="Classement")
-        label.grid(row=0, column=0, columnspan=total_rounds + 7, padx=20)
+        for column in range(1, total_rounds + 7):
+            self.grid_columnconfigure(column, weight=0, uniform="same_group")
 
         # Headers
-        for i in range(total_rounds):
-            ctk.CTkLabel(self, text="Ronde {}".format(i + 1)).grid(row=1, column=i + 1, **self.default_grid_text)
+        for column in range(1, total_rounds + 1):
+            ctk.CTkLabel(self, text="Ronde {}".format(column + 1)).grid(row=0, column=column, **self.default_grid_text)
         for column, label in enumerate(("PT", "PV", "Épice", "Solaris", "Eau", "Troupes"), total_rounds + 1):
-            ctk.CTkLabel(self, text=label).grid(row=1, column=column, **self.default_grid_text)
+            ctk.CTkLabel(self, text=label).grid(row=0, column=column, **self.default_grid_text)
 
         # Players
-        for row, player_info in enumerate(summary, 2):
+        for row, player_info in enumerate(summary, 1):
             self._add_player_row(row, player_info)
 
     def _add_player_row(self, row_index, player_info):
