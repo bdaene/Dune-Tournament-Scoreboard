@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import messagebox
 import customtkinter as ctk
 
 from dune_tournament_scoreboard.controllers import tournament
@@ -41,5 +41,8 @@ class TournamentSelection(ctk.CTkToplevel):
         dialog = ctk.CTkInputDialog(text="Choisissez un nom de tournoi", title="Créer un tournoi")
         get_input = dialog.get_input()
         if get_input:
-            tournament.create(get_input)
-            self._select_tournament(get_input)
+            try:
+                tournament.create(get_input)
+                self._select_tournament(get_input)
+            except ValueError as err:
+                messagebox.showerror('Error', str(err))
