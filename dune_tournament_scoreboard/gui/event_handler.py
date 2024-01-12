@@ -6,6 +6,7 @@ class EventName(Enum):
     PLAYER_NAME_CHANGE = 1
     PLAYER_STATUS_CHANGE = 2
     PLAYER_SCORE_CHANGE = 3
+    PLAYER_ADDED = 4
 
 
 class EventHandler:

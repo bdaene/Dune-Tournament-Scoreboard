@@ -15,8 +15,8 @@ class Scoreboard(ctk.CTkFrame):
     def __init__(self, master, event_handler, **kwargs):
         super().__init__(master, **kwargs)
         self.event_handler = event_handler
-
-        self.event_handler.subscribe_any_player(EventName.PLAYER_SCORE_CHANGE, lambda: self._refresh())
+        self.event_handler.subscribe_any_player(EventName.PLAYER_SCORE_CHANGE, self._refresh)
+        self.event_handler.subscribe_any_player(EventName.PLAYER_ADDED, self._refresh)
         self._refresh()
 
     def _refresh(self):
