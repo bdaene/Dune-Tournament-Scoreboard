@@ -13,16 +13,15 @@ class Rounds(ctk.CTkFrame):
 
         # Title
         title = ctk.CTkLabel(self, text="Rondes")
-        self.grid_columnconfigure(0, weight=1)
-        title.grid(row=0, column=0, padx=20)
+        title.pack(side="top", fill="x")
 
         # Rounds
         self.rounds_view = RoundsView(self)
-        self.rounds_view.grid(row=1, column=0, padx=5, sticky="ew")
+        self.rounds_view.pack(expand=1, fill="both", padx=5, pady=5)
 
         # Add round button
         add_round_button = ctk.CTkButton(self, text="Nouvelle ronde", command=self._add_round)
-        add_round_button.grid(row=2, column=0, padx=5, pady=5, sticky="ew")
+        add_round_button.pack(side="bottom", fill="x")
 
     def _add_round(self):
         tournament.create_new_round()
