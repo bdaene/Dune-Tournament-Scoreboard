@@ -174,8 +174,5 @@ class RoundsView(ctk.CTkTabview):
         player_name = ctk.CTkLabel(tab_frame, textvariable=player_name_variable)
         player_name.grid(row=row_index, column=2, **self.default_grid_text)
 
-        def _update_player_name(player_id_event):
-            if player_id_event == player_id:
-                player_name_variable.set(tournament.get_player(player_id).surname)
-
-        self.event_handler.subscribe(EventName.PLAYER_NAME_CHANGE, _update_player_name)
+        self.event_handler.subscribe(EventName.PLAYER_NAME_CHANGE, player_id,
+                                     lambda: player_name_variable.set(tournament.get_player(player_id).surname))

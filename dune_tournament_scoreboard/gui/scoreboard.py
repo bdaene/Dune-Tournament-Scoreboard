@@ -30,15 +30,8 @@ class Scoreboard(ctk.CTkFrame):
             player_name.configure(text_color="grey")
         player_name.grid(row=count + 1, column=0, padx=5, pady=2, sticky="w")
 
-        def _update_player_name(player_id_event):
-            if player_id_event == player_info[0].id:
-                player_name_variable.set(tournament.get_player(player_info[0].id).surname)
-
-        self.event_handler.subscribe(EventName.PLAYER_NAME_CHANGE, _update_player_name)
-
-        def _update_player_status(player_id_event):
-            if player_id_event == player_info[0].id:
-                player_name.configure(
-                    text_color=default_color if tournament.get_player(player_info[0].id).is_active else "grey")
-
-        self.event_handler.subscribe(EventName.PLAYER_STATUS_CHANGE, _update_player_status)
+        self.event_handler.subscribe(EventName.PLAYER_NAME_CHANGE,
+                                     lambda: player_name_variable.set(tournament.get_player(player_info[0].id).surname))
+        self.event_handler.subscribe(EventName.PLAYER_STATUS_CHANGE,
+                                     lambda: player_name.configure(text_color=default_color if tournament.get_player(
+                                         player_info[0].id).is_active else "grey"))
