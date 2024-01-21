@@ -201,6 +201,6 @@ pyinstaller .\dune_tournament_scoreboard\gui\main.py --name scoreboard-gui --one
 
 ## Contact
 
-You can contact me on my mail: benoitdaene@gmail.com
+You can contact me on my mail: benoitdaene __@__ gmail.com
 
 
